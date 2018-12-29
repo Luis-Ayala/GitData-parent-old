@@ -1,6 +1,7 @@
-package com.layala.gitdata.servicios;
+package com.layala.gitdata.pruebas.unitarias.servicios;
 
 import com.layala.gitdata.entidades.Repositorio;
+import com.layala.gitdata.servicios.RepositorioSrv;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;

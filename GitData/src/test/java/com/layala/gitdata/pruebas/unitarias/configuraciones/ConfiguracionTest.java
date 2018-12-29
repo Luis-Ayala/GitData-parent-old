@@ -1,5 +1,6 @@
-package com.layala.gitdata.configuraciones;
+package com.layala.gitdata.pruebas.unitarias.configuraciones;
 
+import com.layala.gitdata.configuraciones.Configuracion;
 import com.mongodb.client.MongoClient;
 import org.junit.Test;
 import static org.junit.Assert.*;

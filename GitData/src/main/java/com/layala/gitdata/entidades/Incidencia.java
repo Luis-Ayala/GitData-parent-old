@@ -1,5 +1,6 @@
 package com.layala.gitdata.entidades;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class Incidencia {
     private Usuario usuario;
     private Repositorio repositorio;
     private List<Comentario> comentarios;
+    private BigDecimal tiempoRespuestaInicial;
+    private BigDecimal tiempoResolucion;
 
     public long getIncidenciaId() {
         return incidenciaId;
@@ -163,5 +166,13 @@ public class Incidencia {
 
     public void setComentarios(List<Comentario> comentarios) {
         this.comentarios = comentarios;
+    }
+
+    public BigDecimal getTiempoRespuestaInicial() {
+        return tiempoRespuestaInicial;
+    }
+
+    public void setTiempoRespuestaInicial(BigDecimal tiempoRespuestaInicial) {
+        this.tiempoRespuestaInicial = tiempoRespuestaInicial;
     }
 }
