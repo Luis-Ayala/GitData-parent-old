@@ -23,7 +23,9 @@ import com.mongodb.client.model.WriteModel;
 import com.mongodb.client.result.UpdateResult;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
@@ -31,6 +33,7 @@ import org.eclipse.egit.github.core.Comment;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.Label;
 import org.eclipse.egit.github.core.Milestone;
+import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.service.IssueService;
 
@@ -202,10 +205,65 @@ public class IncidenciaSrv {
         
         final List<Incidencia> lista = new ArrayList<>();
         try {
+            final RepositoryId repositorioId = new RepositoryId(Configuracion.getProperty("usuario"), 
+                                                                repositorio.getNombre());
+            
             final IssueService issueSrv = new IssueService();
             issueSrv.getClient().setCredentials(Configuracion.getProperty("usuario"), Configuracion.getProperty("password"));
             
-            for (Issue issue : issueSrv.getIssues(Configuracion.getProperty("usuario"), repositorio.getNombre(), null)) {
+            final List<Issue> incidencias = issueSrv.getIssues(repositorioId, null);
+            for (Issue issue : incidencias) {
+                final Incidencia incidencia = new Incidencia();
+                incidencia.setIncidenciaId(issue.getId());
+                incidencia.setCerradaEn(issue.getClosedAt());
+                incidencia.setCreadaEn(issue.getCreatedAt());
+                incidencia.setModificadaEn(issue.getUpdatedAt());
+                incidencia.setNumComentarios(issue.getComments());
+                incidencia.setCuerpo(issue.getBody());
+                incidencia.setHtmlUrl(issue.getHtmlUrl());
+                incidencia.setUrl(issue.getUrl());
+                incidencia.setEstado(issue.getState());
+                incidencia.setTitulo(issue.getTitle());
+                incidencia.setHito(getHito(issue.getMilestone()));
+                incidencia.setEtiquetas(getEtiqueteas(issue.getLabels()));
+                incidencia.setPullRequest(getPullRequest(issue.getPullRequest()));
+                incidencia.setUsuario(getUsuario(issue.getUser()));
+                incidencia.setAsignadoA(getUsuario(issue.getAssignee()));
+                incidencia.setRepositorio(repositorio);
+                incidencia.setComentarios(getComentarios(issueSrv, repositorio, issue));
+                lista.add(incidencia);
+            }
+        } catch(Exception e) {
+            throw new GitDataIncidenciaExcepcion(e);
+        } 
+        LOGGER.info("Método getIncidenciasPorRepositorio(final Repositorio repositorio) finalizado.");
+        return lista;
+    }
+    
+    /**
+     * Regresa las incidencias cerradas del repositorio que se le pasa como parámetro <code>repositorio</code>
+     *
+     * @param repositorio Repositorio para buscar las incidencias
+     * @return Lista de incidencias por repositorio
+     * @throws com.layala.gitdata.excepciones.GitDataIncidenciaExcepcion
+     */
+    public List<Incidencia> getIncidenciasCerradasPorRepositorio(final Repositorio repositorio) throws GitDataIncidenciaExcepcion {
+        LOGGER.info("Entrando al método getIncidenciasPorRepositorio(final Repositorio repositorio).");
+        
+        final List<Incidencia> lista = new ArrayList<>();
+        try {
+            final RepositoryId repositorioId = new RepositoryId(Configuracion.getProperty("usuario"), 
+                                                                repositorio.getNombre());
+            
+            final IssueService issueSrv = new IssueService();
+            issueSrv.getClient().setCredentials(Configuracion.getProperty("usuario"), 
+                                                Configuracion.getProperty("password"));
+            
+            final Map<String, String> filderdata = new HashMap<>();
+            filderdata.put(IssueService.FILTER_STATE, IssueService.STATE_CLOSED);
+            final List<Issue> cerradas = issueSrv.getIssues(repositorioId, filderdata);
+            
+            for (Issue issue : cerradas) {
                 final Incidencia incidencia = new Incidencia();
                 incidencia.setIncidenciaId(issue.getId());
                 incidencia.setCerradaEn(issue.getClosedAt());
