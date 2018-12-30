@@ -4,8 +4,6 @@ import com.layala.gitdata.entidades.Incidencia;
 import com.layala.gitdata.entidades.Repositorio;
 import com.layala.gitdata.excepciones.GitDataIncidenciaExcepcion;
 import com.layala.gitdata.excepciones.GitDataRepositorioExcepcion;
-import com.layala.gitdata.indicadores.Indicador92;
-import com.layala.gitdata.indicadores.Indicador93;
 import com.layala.gitdata.servicios.IncidenciaSrv;
 import com.layala.gitdata.servicios.RepositorioSrv;
 import java.io.IOException;
@@ -41,14 +39,7 @@ public class App {
                 incidencias.addAll(lista);
                 incidencias.addAll(lista2);
             }
-            
-            Indicador93 i = new Indicador93();
-            List<Incidencia> in = i.getTiempoResolucion(incidencias);
-            in.stream().forEach( ii -> {
-                System.out.println(ii.getIndicador93() + " Horas");
-            });
-            
-            //incidenciaSrv.insertarIncidencia(incidencias);
+            incidenciaSrv.insertarIncidencia(incidencias);
         } catch (GitDataIncidenciaExcepcion | GitDataRepositorioExcepcion ex) {
             LOGGER.error(ex);
         }

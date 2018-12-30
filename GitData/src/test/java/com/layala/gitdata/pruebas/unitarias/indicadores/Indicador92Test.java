@@ -1,10 +1,8 @@
 package com.layala.gitdata.pruebas.unitarias.indicadores;
 
 import com.layala.gitdata.entidades.Incidencia;
-import com.layala.gitdata.indicadores.Indicador91;
+import com.layala.gitdata.indicadores.Indicador92;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -14,12 +12,11 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Luis Ayala
+ * @author Luis
  */
-public class Indicador91Test {
-    private static final Logger LOGGER = LogManager.getLogger(Indicador91Test.class);
+public class Indicador92Test {
     
-    public Indicador91Test() {
+    public Indicador92Test() {
     }
     
     @BeforeClass
@@ -39,16 +36,15 @@ public class Indicador91Test {
     }
 
     /**
-     * Test of getIndicenciasNoResueltas method, of class Indicador91.
-     * @throws java.lang.Exception
+     * Test of getTiempoRespuestaInicial method, of class Indicador92.
      */
     @Test
-    public void testGetIndicenciasNoResueltas() throws Exception {
-        System.out.println("getIndicenciasNoResueltas");
+    public void testGetTiempoRespuestaInicial() throws Exception {
+        System.out.println("getTiempoRespuestaInicial");
         List<Incidencia> incidencias = null;
-        Indicador91 instance = new Indicador91();
+        Indicador92 instance = new Indicador92();
         List<Incidencia> expResult = null;
-        List<Incidencia> result = instance.getIndicenciasNoResueltas(incidencias);
+        List<Incidencia> result = instance.getTiempoRespuestaInicial(incidencias);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
