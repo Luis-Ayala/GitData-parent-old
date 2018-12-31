@@ -2,15 +2,19 @@ package com.layala.gitdata.entidades;
 
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * Clase que representa un objeto Issue de la API v3 de GitHub
- * 
+ *
  * @author Luis Ayala
  * @version 1.0
  * @since 1.0
  */
 public class Incidencia {
+
     private long incidenciaId;
     private Date cerradaEn;
     private Date creadaEn;
@@ -28,8 +32,8 @@ public class Incidencia {
     private Usuario usuario;
     private Repositorio repositorio;
     private List<Comentario> comentarios;
-    private long Indicador92;
-    private long Indicador93;
+    private long indicador92;
+    private long indicador93;
 
     public long getIncidenciaId() {
         return incidenciaId;
@@ -168,18 +172,57 @@ public class Incidencia {
     }
 
     public long getIndicador92() {
-        return Indicador92;
+        return indicador92;
     }
 
-    public void setIndicador92(long Indicador92) {
-        this.Indicador92 = Indicador92;
+    public void setIndicador92(long indicador92) {
+        this.indicador92 = indicador92;
     }
 
     public long getIndicador93() {
-        return Indicador93;
+        return indicador93;
     }
 
-    public void setIndicador93(long Indicador93) {
-        this.Indicador93 = Indicador93;
-    }    
+    public void setIndicador93(long indicador93) {
+        this.indicador93 = indicador93;
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("incidenciaId", incidenciaId)
+                .append("titulo",       titulo)
+                .append("creadaEn",     creadaEn)
+                .append("estado",       estado)
+                .toString();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+
+        if (!(obj instanceof Incidencia)) {
+            return false;
+        }
+
+        Incidencia incidencia = (Incidencia) obj;
+        return new EqualsBuilder()
+                .append(incidenciaId, incidencia.getIncidenciaId())
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(21, 15)
+                .append(incidenciaId)
+                .toHashCode();
+    }
 }
