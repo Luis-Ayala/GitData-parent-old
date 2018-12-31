@@ -125,7 +125,7 @@ public class Indicador92Test {
      * Esta prueba verifica que la lista de resultado no sea una lista vacia, 
      * que sea del mismo tamaño que la lista que se pasa como parámetro y que
      * la incidencia que contiene el comentario tenga en el campo indicador92
-     * el valor de 22 horas-
+     * el valor de 25 horas-
      * 
      * @throws GitDataIncidenciaExcepcion 
      */
@@ -139,10 +139,10 @@ public class Indicador92Test {
         final Incidencia incidencia2 = new Incidencia();
         
         Comentario comentario = new Comentario();
-        comentario.setCreadoEn(new Date(2018, 12, 31, 10, 20, 32));
+        comentario.setCreadoEn(new Date(2018, 12, 30, 10, 20, 32));
         
         incidencia1.setIncidenciaId(1);
-        incidencia1.setCreadaEn(new Date(2018, 12, 30, 11, 35, 36));
+        incidencia1.setCreadaEn(new Date(2018, 12, 31, 11, 35, 36));
         incidencia1.setComentarios(new ArrayList<>());
         incidencia1.setIndicador92(0);
         incidencia1.setComentarios(Arrays.asList(comentario));
@@ -158,7 +158,7 @@ public class Indicador92Test {
         
         assertFalse(resultado.isEmpty());
         assertTrue(resultado.size() == 2);
-        assertThat(resultado, hasItem(Matchers.<Incidencia>hasProperty("indicador92", equalTo(22L))));
+        assertThat(resultado, hasItem(Matchers.<Incidencia>hasProperty("indicador92", equalTo(25L))));
         LOGGER.info("Método getIndicenciasNoResueltasResultadoEncontradoTest finalizado.");
     }
 }
