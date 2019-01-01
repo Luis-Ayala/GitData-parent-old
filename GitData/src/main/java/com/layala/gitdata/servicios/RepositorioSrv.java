@@ -39,8 +39,7 @@ public class RepositorioSrv {
 
     /**
      * Actualiza los repositorios que se pasan al método en el parámetro <code>repositorios</code> 
-     * Este método reemplaza el repositorio por completo por uno nuevo, si no se
-     * localiza el repositorio este es creado.
+     * Este método reemplaza el repositorio por completo por uno nuevo.
      * <p>
      * La búsqueda del repositorio en la base de datos se hace por medio del campo
      * <code>repositorioId</code>
@@ -61,16 +60,14 @@ public class RepositorioSrv {
             final MongoDatabase mongo = cliente.getDatabase(Configuracion.getProperty("database"));
             final MongoCollection<Document> coleccion = mongo.getCollection(Configuracion.getProperty("col_repositorios"));
             final Gson gson = new Gson();
-            resultados = new ArrayList<>(repositorios.size());
+            resultados = new ArrayList<>();
             repositorios.forEach((repositorio) -> {
-                final FindIterable<Document> buscado = coleccion.find(eq("repositorioId", repositorio.getRepositorioId()));
-                if (buscado != null && buscado.first() != null) {
-                    final UpdateResult resultado = coleccion.replaceOne(buscado.first(),
-                            Document.parse(gson.toJson(repositorio)),
-                            new ReplaceOptions().upsert(true));
-                    resultados.add(resultado.getModifiedCount());
-                }
+                final UpdateResult resultado = coleccion.replaceOne(eq("repositorioId", repositorio.getRepositorioId()),
+                                                                    Document.parse(gson.toJson(repositorio)));
+                resultados.add(resultado.getModifiedCount());
             });
+        } catch(Exception e) {
+            throw new GitDataRepositorioExcepcion(e);
         }
 
         long modificados = resultados.stream().mapToLong(Long::longValue).sum();
@@ -95,14 +92,18 @@ public class RepositorioSrv {
      */
     public long actualizarRepositorio(final Repositorio repositorio) throws GitDataRepositorioExcepcion {
         LOGGER.info("Entrando al método actualizarRepositorio(final Repositorio repositorio).");
-        long actualizado = 0;
+        
+        if(repositorio == null) {
+            throw new GitDataRepositorioExcepcion("El repositorio no puede ser nulo", new IllegalArgumentException());
+        }
+        
+        long actualizado = 0L;
         try (final MongoClient cliente = Configuracion.crearConexion()) {
             final MongoDatabase mongo = cliente.getDatabase(Configuracion.getProperty("database"));
             final MongoCollection<Document> coleccion = mongo.getCollection(Configuracion.getProperty("col_repositorios"));
             final Gson gson = new Gson();
-
-            final UpdateResult resultado = coleccion.replaceOne(eq("repositorioId", String.valueOf(repositorio.getRepositorioId())),
-                    Document.parse(gson.toJson(repositorio)));
+            final UpdateResult resultado = coleccion.replaceOne(eq("repositorioId", repositorio.getRepositorioId()),
+                                                                Document.parse(gson.toJson(repositorio)));
             actualizado = resultado != null ? resultado.getModifiedCount() : 0L;
         }catch(Exception e) {
             throw new GitDataRepositorioExcepcion(e);
@@ -155,6 +156,11 @@ public class RepositorioSrv {
      */
     public long insertarRepositorio(final Repositorio repositorio) throws GitDataRepositorioExcepcion {
         LOGGER.info("Entrando al método insertarRepositorio(final Repositorio repositorio).");
+        
+        if(repositorio == null) {
+            throw new GitDataRepositorioExcepcion("El repositorio no puede ser nulo", new IllegalArgumentException());
+        }
+        
         final Gson gson = new Gson();
         final String json = gson.toJson(repositorio);
         final int resultado = 1;
