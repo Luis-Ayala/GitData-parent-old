@@ -34,6 +34,7 @@ public class Incidencia {
     private List<Comentario> comentarios;
     private long indicador92;
     private long indicador93;
+    private int numero;
 
     public long getIncidenciaId() {
         return incidenciaId;
@@ -187,6 +188,14 @@ public class Incidencia {
         this.indicador93 = indicador93;
     }
 
+    public long getNumero() {
+        return numero;
+    }
+
+    public void setNumero(int numero) {
+        this.numero = numero;
+    }
+    
     @Override
     public String toString() {
         return new ToStringBuilder(this)

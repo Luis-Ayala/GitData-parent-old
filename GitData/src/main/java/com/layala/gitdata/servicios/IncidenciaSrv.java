@@ -231,6 +231,7 @@ public class IncidenciaSrv {
                 incidencia.setAsignadoA(getUsuario(issue.getAssignee()));
                 incidencia.setRepositorio(repositorio);
                 incidencia.setComentarios(getComentarios(issueSrv, repositorio, issue));
+                incidencia.setNumero(issue.getNumber());
                 lista.add(incidencia);
             }
         } catch(Exception e) {
@@ -398,7 +399,8 @@ public class IncidenciaSrv {
     private List<Comentario> getComentarios(final IssueService issueSrv, final Repositorio repositorio, final Issue issue) throws IOException, GitDataConfigExcepcion {
         LOGGER.info("Entrando al método getComentarios.");
         final List<Comment> comentarios = issueSrv.getComments(Configuracion.getProperty("usuario"), repositorio.getNombre(), issue.getNumber());
-        final List<Comentario> lista = (comentarios != null && !comentarios.isEmpty()) ? new ArrayList<>(comentarios.size()) : new ArrayList<>(0);
+        final List<Comentario> lista = comentarios != null ? new ArrayList<>(comentarios.size()) : new ArrayList<>(0);
+        
         if (comentarios != null && !comentarios.isEmpty()) {
             comentarios.stream().forEach(comment -> {
                 final Comentario comentario = new Comentario();
