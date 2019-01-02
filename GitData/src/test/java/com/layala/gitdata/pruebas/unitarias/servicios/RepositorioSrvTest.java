@@ -10,7 +10,6 @@ import java.util.List;
 import static junit.framework.Assert.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
@@ -234,6 +233,26 @@ public class RepositorioSrvTest {
         long resultado = servicio.actualizarRepositorio(repositorio1);
         assertEquals(resultado, 1L);
         LOGGER.info("Método actualizarRepositorioTest finalizado.");
+    }
+    
+    /**
+     * Prueba para el método getRepositorios.
+     * Se prueba que se regresen todos los repositorio, actualmente hay 3.
+     * 
+     * @throws GitDataRepositorioExcepcion 
+     */
+    @Test
+    public void getRepositoriosTest() throws GitDataRepositorioExcepcion {
+        LOGGER.info("Entrando al método getRepositoriosTest.");
+        
+        RepositorioSrv repoSrv = new RepositorioSrv();
+        List<Repositorio> repositorios = repoSrv.getRepositorios();
+        
+        assertNotNull(repositorios);
+        assertEquals(repositorios.size(), 3);
+        assertFalse(repositorios.isEmpty());
+        
+        LOGGER.info("Método getRepositoriosTest finalizado.");
     }
     
     /**

@@ -53,8 +53,7 @@ public class IncidenciaSrv {
 
     /**
      * Actualiza las incidencias que se le pasan al método en el parámetro <code>incidencias</code> 
-     * Este método reemplaza la incidencia por completo por una nueva, si no se
-     * localiza la incidencia esta es creada.
+     * Este método reemplaza la incidencia por completo por una nueva.
      * <p>
      * La búsqueda de la incidencia en la base de datos se hace por medio del campo
      * <code>incidenciaId</code>
@@ -73,17 +72,13 @@ public class IncidenciaSrv {
         final List<Long> resultados;
         try (final MongoClient cliente = Configuracion.crearConexion()) {
             final MongoDatabase mongo = cliente.getDatabase(Configuracion.getProperty("database"));
-            final MongoCollection<Document> coleccion = mongo.getCollection(Configuracion.getProperty("col_repositorios"));
+            final MongoCollection<Document> coleccion = mongo.getCollection(Configuracion.getProperty("col_incidencias"));
             final Gson gson = new Gson();
             resultados = new ArrayList<>(incidencias.size());
             incidencias.forEach((incidencia) -> {
-                final FindIterable<Document> buscado = coleccion.find(eq("incidenciaId", incidencia.getIncidenciaId()));
-                if (buscado != null && buscado.first() != null) {
-                    final UpdateResult resultado = coleccion.replaceOne(buscado.first(),
-                            Document.parse(gson.toJson(incidencia)),
-                            new ReplaceOptions().upsert(true));
-                    resultados.add(resultado.getModifiedCount());
-                }
+                final UpdateResult resultado = coleccion.replaceOne(eq("incidenciaId", incidencia.getIncidenciaId()),
+                                                                    Document.parse(gson.toJson(incidencia)));
+                resultados.add(resultado.getModifiedCount());
             });
         } catch(Exception e) {
             throw new GitDataIncidenciaExcepcion(e); 
@@ -118,8 +113,8 @@ public class IncidenciaSrv {
             final MongoCollection<Document> coleccion = mongo.getCollection(Configuracion.getProperty("col_incidencias"));
             final Gson gson = new Gson();
 
-            final UpdateResult resultado = coleccion.replaceOne(eq("incidenciaId", String.valueOf(incidencia.getIncidenciaId())),
-                    Document.parse(gson.toJson(incidencia)));
+            final UpdateResult resultado = coleccion.replaceOne(eq("incidenciaId", incidencia.getIncidenciaId()),
+                                                                Document.parse(gson.toJson(incidencia)));
             actualizado = resultado != null ? resultado.getModifiedCount() : 0L;
         }catch(Exception e) {
             throw new GitDataIncidenciaExcepcion(e);
@@ -174,6 +169,9 @@ public class IncidenciaSrv {
      */
     public long insertarIncidencia(final Incidencia incidencia) throws GitDataIncidenciaExcepcion {
         LOGGER.info("Entrando al método insertarIncidencia(final Incidencia incidencia).");
+        if(incidencia == null) {
+            throw new GitDataIncidenciaExcepcion("La incidencia no puede ser nula");
+        }
         
         final Gson gson = new Gson();
         final String json = gson.toJson(incidencia);
